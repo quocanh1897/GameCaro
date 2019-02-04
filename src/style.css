@@ -44,6 +44,7 @@ input[type=submit]:hover {
 .game {
   display: flex;
   flex-direction: column;
+  width: 100%;
   /* min-width: 1000px; */
 }
 
@@ -107,4 +108,13 @@ input[type=submit]:hover {
   color: #fff;
   font-weight: 600;
 }
+.room-btn {
+  transition: all 1s;
+  margin: 1em;
+}
+.create-btn{
+  margin: 1.25em;
+}
+
+
  
