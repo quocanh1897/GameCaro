@@ -18,7 +18,15 @@ const NavigationBar = () => {
   );
 };
 
-
+const FooterBar = () => {
+  return (
+    <Navbar bg="primary" variant="dark" fixed="bottom">
+    
+      <Navbar.Brand>Created in 2018</Navbar.Brand>
+    
+    </Navbar>
+  )
+}
 class Game extends React.Component {
   constructor(props) {
     super(props);
@@ -41,6 +49,8 @@ class Game extends React.Component {
             width={this.state.width} {...props}/>}
             
           />
+          <Route path="/" component={FooterBar} />
+
         </div>
       </BrowserRouter>
     );

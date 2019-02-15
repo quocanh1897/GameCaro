@@ -62,7 +62,7 @@ input[type=submit]:hover {
 
 .game-board{
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   margin: 25px;
 }
@@ -116,5 +116,7 @@ input[type=submit]:hover {
   margin: 1.25em;
 }
 
-
- 
+.room-label{
+  display: flex;
+  
+}

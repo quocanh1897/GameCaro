@@ -1,26 +1,68 @@
 import React from "react";
 import Row from "./Row";
+import Button from "react-bootstrap/Button";
+import ProgressBar from "react-bootstrap/ProgressBar";
+import InputGroup from "react-bootstrap/InputGroup";
+import FormControl from "react-bootstrap/FormControl";
+import Badge from "react-bootstrap/Badge";
 import socketIOClient from "socket.io-client";
 
 export default class Board extends React.Component {
   /* Helper Functions */
-  constructor(props){
+  constructor(props) {
     super(props);
 
     this.state = {
+      room: "",
+      playerName: "",
+      ready: false,
       response: false,
-      endpoint: "localhost:4001",
+      nameOK: false,
+      endpoint: "localhost:4001"
     };
+    this.onClick = this.onClick.bind(this);
+    this.updateInput = this.updateInput.bind(this);
+    this.handleSubmitName = this.handleSubmitName.bind(this);
   }
-  
-  componentDidMount() {
+
+  onClick() {
+    if (!this.state.nameOK){
+      alert("You must choose your name first!");
+      return;
+    }
+    this.setState({ ready: true });
+
     const { endpoint } = this.state;
     const socket = socketIOClient(endpoint);
-    socket.on("send-data", data => {
-      alert('from server' + data);
-    });
 
-    socket.emit("client-send-data", this.state.response);
+    let req = {
+      header: "init",
+      room: this.state.room,
+      playerName: this.state.playerName,
+    };
+    socket.emit("from-client", req);
+  }
+
+  updateInput(event) {
+    this.setState({ playerName: event.target.value });
+  }
+
+  handleSubmitName() {
+    this.setState({ nameOK: true });
+  }
+
+  componentDidMount() {
+    const {
+      match: { params }
+    } = this.props;
+    this.setState({ room: params.room });
+    //   const { endpoint } = this.state;
+    //   const socket = socketIOClient(endpoint);
+    //   socket.on("send-data", data => {
+    //     alert('from server' + data);
+    //   });
+
+    //   // socket.emit("client-send-data", this.state.response);
   }
 
   // Gets initial board data
@@ -46,7 +88,6 @@ export default class Board extends React.Component {
     return data;
   }
 
-  
   renderBoard(data) {
     let arr = [];
     for (let i = 0; i < data.length; i++) {
@@ -57,19 +98,70 @@ export default class Board extends React.Component {
   }
 
   render() {
+    const {
+      height,
+      width,
+      match: { params }
+    } = this.props;
 
-    const {height, width, match: {params}} = this.props;
-    const roomname = params.room;
-
+    let inputName = (
+      <div>
+        <InputGroup className="mb-3">
+          <FormControl
+            placeholder="Choose your name in game..."
+            onChange={this.updateInput}
+          />
+          <InputGroup.Append>
+            <Button variant="outline-primary" onClick={this.handleSubmitName}>
+              OK!
+            </Button>
+          </InputGroup.Append>
+        </InputGroup>
+      </div>
+    );
+    let labelName = (
+      <div>
+        <label>
+          Player: {this.state.playerName}
+        </label>
+      </div>
+    )
     let boardData = this.initBoardData(height, width);
+
+    let board = (
+      <div className="board" id="boardplay">
+        {this.renderBoard(boardData)}
+      </div>
+    );
+
+    let waitBar = (
+      <div>
+        <div>Waiting for opponent to connect...</div>
+        <ProgressBar animated now={100} />
+      </div>
+    );
+
     return (
       <div className="game-board">
-        <div className="board" >
-          {this.renderBoard(boardData)}
+        <Button variant="light" className="room-label">
+          <Badge variant="light">{this.state.room}</Badge>
+        </Button>
+        {this.state.nameOK ? labelName : inputName}
+        <div>
+          {(this.state.ready) ? null : (
+            <Button
+              variant="outline-success"
+              onClick={this.onClick}
+              className="room-btn"
+            >
+              READY!
+            </Button>
+          )}
+
+          {this.state.response ? board : null}
+          {this.state.ready && !this.state.response ? waitBar : null}
         </div>
       </div>
-      
     );
   }
 }
-
