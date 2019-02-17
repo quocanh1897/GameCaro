@@ -110,7 +110,7 @@ input[type=submit]:hover {
 }
 .room-btn {
   transition: all 1s;
-  margin: 1em;
+  margin: 20px;
 }
 .create-btn{
   margin: 1.25em;
@@ -119,4 +119,18 @@ input[type=submit]:hover {
 .room-label{
   display: flex;
   
+}
+.line{
+  width: 100%;
+  
+}
+.vs{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+.wrapper-room-btn{
+  display: flex;
+  flex-wrap: wrap;
 }

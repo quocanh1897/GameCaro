@@ -31,8 +31,8 @@ class Game extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      height: 10,
-      width: 10,
+      height: 20,
+      width: 20,
       isx: true,
     };
   }

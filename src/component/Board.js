@@ -15,6 +15,7 @@ export default class Board extends React.Component {
     this.state = {
       room: "",
       playerName: "",
+      opponent: "",
       ready: false,
       response: false,
       nameOK: false,
@@ -26,7 +27,7 @@ export default class Board extends React.Component {
   }
 
   onClick() {
-    if (!this.state.nameOK){
+    if (!this.state.nameOK) {
       alert("You must choose your name first!");
       return;
     }
@@ -38,9 +39,15 @@ export default class Board extends React.Component {
     let req = {
       header: "init",
       room: this.state.room,
-      playerName: this.state.playerName,
+      playerName: this.state.playerName
     };
     socket.emit("from-client", req);
+
+    socket.on("from-server", data => {
+      if (data.header == "game-start") {
+        this.setState({ opponent: data.opponentName, response: true });
+      }
+    });
   }
 
   updateInput(event) {
@@ -120,12 +127,20 @@ export default class Board extends React.Component {
       </div>
     );
     let labelName = (
-      <div>
+      <div className="vs">
         <label>
-          Player: {this.state.playerName}
+          <h4>Player: {this.state.playerName}</h4>
+        </label>
+        <label>
+          <h2>
+            vs
+          </h2>
+        </label>
+        <label>
+          <h4> {this.state.opponent} </h4>
         </label>
       </div>
-    )
+    );
     let boardData = this.initBoardData(height, width);
 
     let board = (
@@ -144,11 +159,13 @@ export default class Board extends React.Component {
     return (
       <div className="game-board">
         <Button variant="light" className="room-label">
-          <Badge variant="light">{this.state.room}</Badge>
+          <Badge variant="light">
+            <h2> {this.state.room}</h2>{" "}
+          </Badge>
         </Button>
         {this.state.nameOK ? labelName : inputName}
         <div>
-          {(this.state.ready) ? null : (
+          {this.state.ready ? null : (
             <Button
               variant="outline-success"
               onClick={this.onClick}
