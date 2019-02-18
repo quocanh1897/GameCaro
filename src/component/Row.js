@@ -9,8 +9,15 @@ export default class Row extends React.Component {
     for (let i = 0; i < row.length; i++) {
       arr.push(
         <Cell
+          id={this.props.id}
           value={row[i]}
           key={i}
+          y={this.props.y}
+          x={i}
+          isMyTurn={this.props.isMyTurn}
+          isX={this.props.isX}
+          oppID={this.props.oppID}
+          room={this.props.room}
         />
       );
     }

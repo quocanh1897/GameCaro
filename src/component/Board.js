@@ -6,19 +6,30 @@ import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
 import Badge from "react-bootstrap/Badge";
 import socketIOClient from "socket.io-client";
+import SocketContext from "../socket-context";
 
+let socket;
 export default class Board extends React.Component {
   /* Helper Functions */
   constructor(props) {
     super(props);
-
+    const {
+      height,
+      width,
+      match: { params }
+    } = this.props;
     this.state = {
+      id: "",
       room: "",
       playerName: "",
       opponent: "",
       ready: false,
       response: false,
       nameOK: false,
+      isMyTurn: false,
+      isX: false,
+      oppID: "",
+      boardData: this.initBoardData(height, width),
       endpoint: "localhost:4001"
     };
     this.onClick = this.onClick.bind(this);
@@ -34,7 +45,7 @@ export default class Board extends React.Component {
     this.setState({ ready: true });
 
     const { endpoint } = this.state;
-    const socket = socketIOClient(endpoint);
+    socket = socketIOClient(endpoint);
 
     let req = {
       header: "init",
@@ -45,7 +56,24 @@ export default class Board extends React.Component {
 
     socket.on("from-server", data => {
       if (data.header == "game-start") {
-        this.setState({ opponent: data.opponentName, response: true });
+        console.log(data);
+        this.setState({
+          id: data.id,
+          oppID: data.opponent,
+          opponent: data.opponentName,
+          response: true,
+          isMyTurn: data.isMyTurn,
+          isX: data.isX
+        });
+      }
+      if (data.header == "update-check-from-server"){
+        console.log(data);
+
+
+        this.setState({
+          isMyTurn: data.isMyTurn,
+          isX: data.isX
+        })
       }
     });
   }
@@ -98,7 +126,18 @@ export default class Board extends React.Component {
   renderBoard(data) {
     let arr = [];
     for (let i = 0; i < data.length; i++) {
-      arr.push(<Row row={data[i]} key={i} />);
+      arr.push(
+        <Row
+          id={this.state.id}
+          row={data[i]}
+          key={i}
+          y={i}
+          isMyTurn={this.state.isMyTurn}
+          isX={this.state.isX}
+          oppID={this.state.oppID}
+          room={this.state.room}
+        />
+      );
     }
 
     return <div>{arr}</div>;
@@ -132,20 +171,19 @@ export default class Board extends React.Component {
           <h4>Player: {this.state.playerName}</h4>
         </label>
         <label>
-          <h2>
-            vs
-          </h2>
+          <h2>vs</h2>
         </label>
         <label>
           <h4> {this.state.opponent} </h4>
         </label>
       </div>
     );
-    let boardData = this.initBoardData(height, width);
+    // let boardData = this.initBoardData(height, width);
+    // this.setState({boardData: boardData});
 
     let board = (
       <div className="board" id="boardplay">
-        {this.renderBoard(boardData)}
+        {this.renderBoard(this.state.boardData)}
       </div>
     );
 
@@ -157,28 +195,30 @@ export default class Board extends React.Component {
     );
 
     return (
-      <div className="game-board">
-        <Button variant="light" className="room-label">
-          <Badge variant="light">
-            <h2> {this.state.room}</h2>{" "}
-          </Badge>
-        </Button>
-        {this.state.nameOK ? labelName : inputName}
-        <div>
-          {this.state.ready ? null : (
-            <Button
-              variant="outline-success"
-              onClick={this.onClick}
-              className="room-btn"
-            >
-              READY!
-            </Button>
-          )}
+      <SocketContext.Provider value={socket}>
+        <div className="game-board">
+          <Button variant="light" className="room-label">
+            <Badge variant="light">
+              <h2> {this.state.room}</h2>{" "}
+            </Badge>
+          </Button>
+          {this.state.nameOK ? labelName : inputName}
+          <div>
+            {this.state.ready ? null : (
+              <Button
+                variant="outline-success"
+                onClick={this.onClick}
+                className="room-btn"
+              >
+                READY!
+              </Button>
+            )}
 
-          {this.state.response ? board : null}
-          {this.state.ready && !this.state.response ? waitBar : null}
+            {this.state.response ? board : null}
+            {this.state.ready && !this.state.response ? waitBar : null}
+          </div>
         </div>
-      </div>
+      </SocketContext.Provider>
     );
   }
 }
