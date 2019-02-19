@@ -134,3 +134,7 @@ input[type=submit]:hover {
   display: flex;
   flex-wrap: wrap;
 }
+.line-sm{
+  width: 20%;
+  margin: 15px;
+}

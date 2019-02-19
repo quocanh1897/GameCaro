@@ -28,6 +28,7 @@ export default class Board extends React.Component {
       nameOK: false,
       isMyTurn: true,
       isX: false,
+      holdingX: false,
       oppID: "",
       boardData: this.initBoardData(height, width),
       endpoint: "localhost:4001",
@@ -67,7 +68,8 @@ export default class Board extends React.Component {
           opponent: data.opponentName,
           response: true,
           isMyTurn: data.isMyTurn,
-          isX: data.isX
+          isX: data.isX,
+          holdingX: data.isX
         });
       }
       if (data.header === "update-check-from-server") {
@@ -84,26 +86,19 @@ export default class Board extends React.Component {
           }
         }
         this.setState({boardData: updatedBoard})
-        // let incell = "";
-        // if (data.isX) {incell = "❌"} 
-        // else {incell = "⭕"}
+        
+      }
+
+      if (data.header === "check-win-from-server") {
+        console.log("WINNER: "+  data.winner);
+        if (data.winner === this.state.id ){
+          alert("YOU WIN !");
+        }else{
+          alert("YOU LOSE ...");
+        }
       }
     });
   }
-
-  // shouldComponentUpdate(nextProps, nextState){
-  //   if (!nextState.isMyTurn && nextState.response){
-  //     return false;
-  //   }
-  //   return true;
-  // }
-
-  // allowClick(){
-  //   if (!this.state.isMyTurn){
-  //     alert("This is not your turn!");
-  //     return;
-  //   }
-  // }
 
   updateInput(event) {
     this.setState({ playerName: event.target.value });
@@ -147,7 +142,6 @@ export default class Board extends React.Component {
 
   renderBoard(data) {
     let arr = [];
-    console.log( "renderboard ismyturn: " +this.state.isMyTurn);
     for (let i = 0; i < data.length; i++) {
       arr.push(
         <Row
@@ -165,14 +159,20 @@ export default class Board extends React.Component {
 
     return <div>{arr}</div>;
   }
+
+  getPlayerName(){
+    if (this.state.response){
+      return this.state.holdingX ? "❌" : "⭕"
+    }
+  }
+  getOpp(){
+    if (this.state.response){
+      return !this.state.holdingX ? "❌" : "⭕"
+    }
+  }
+  
   
   render() {
-    // const {
-    //   height,
-    //   width,
-    //   match: { params }
-    // } = this.props;
-
     let inputName = (
       <div>
         <InputGroup className="mb-3">
@@ -191,13 +191,13 @@ export default class Board extends React.Component {
     let labelName = (
       <div className="vs">
         <label>
-          <h4>Player: {this.state.playerName}</h4>
+          <h4>Player: {this.state.playerName}: {this.getPlayerName()}</h4>
         </label>
         <label>
           <h2>vs</h2>
         </label>
         <label>
-          <h4> {this.state.opponent} </h4>
+          <h4> {this.state.opponent}: {this.getOpp()}</h4>
         </label>
       </div>
     );
@@ -216,6 +216,13 @@ export default class Board extends React.Component {
         <ProgressBar animated now={100} />
       </div>
     );
+
+    let turningBar = (
+      <div className="line-sm">
+        <div>Your turn ...</div>
+        <ProgressBar animated now={100} variant="info"/>
+      </div>
+    )
 
     return (
       <SocketContext.Provider value={socket}>
@@ -236,7 +243,7 @@ export default class Board extends React.Component {
                 READY!
               </Button>
             )}
-
+            {this.state.isMyTurn && this.state.response ? turningBar : null}
             {this.state.response ? board : null}
             {this.state.ready && !this.state.response ? waitBar : null}
           </div>

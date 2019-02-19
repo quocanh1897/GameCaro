@@ -15,7 +15,6 @@ export default class Row extends React.Component {
   }
 
   render() {
-    console.log("state row "+this.state.isMyTurn);
     let arr = [];
     let { row } = this.props;
     for (let i = 0; i < row.length; i++) {
