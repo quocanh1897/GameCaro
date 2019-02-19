@@ -16,7 +16,7 @@ export default class Board extends React.Component {
     const {
       height,
       width,
-      match: { params }
+      // match: { params }
     } = this.props;
     this.state = {
       id: "",
@@ -26,13 +26,17 @@ export default class Board extends React.Component {
       ready: false,
       response: false,
       nameOK: false,
-      isMyTurn: false,
+      isMyTurn: true,
       isX: false,
       oppID: "",
       boardData: this.initBoardData(height, width),
-      endpoint: "localhost:4001"
+      endpoint: "localhost:4001",
+      height: height,
+      width: width
     };
     this.onClick = this.onClick.bind(this);
+    // this.allowClick = this.allowClick.bind(this);
+
     this.updateInput = this.updateInput.bind(this);
     this.handleSubmitName = this.handleSubmitName.bind(this);
   }
@@ -55,7 +59,7 @@ export default class Board extends React.Component {
     socket.emit("from-client", req);
 
     socket.on("from-server", data => {
-      if (data.header == "game-start") {
+      if (data.header === "game-start") {
         console.log(data);
         this.setState({
           id: data.id,
@@ -66,17 +70,40 @@ export default class Board extends React.Component {
           isX: data.isX
         });
       }
-      if (data.header == "update-check-from-server"){
-        console.log(data);
-
-
+      if (data.header === "update-check-from-server") {
         this.setState({
           isMyTurn: data.isMyTurn,
           isX: data.isX
-        })
+        });
+        let updatedBoard = this.state.boardData;
+        updatedBoard[data.y][data.x].isClicked = true;
+        updatedBoard[data.y][data.x].isX = data.isX;
+        for (let i = 0; i < this.state.height; i++) {
+          for (let j = 0; j < this.state.width; j++) {
+            updatedBoard[i][j].isMyTurn = data.isMyTurn;
+          }
+        }
+        this.setState({boardData: updatedBoard})
+        // let incell = "";
+        // if (data.isX) {incell = "❌"} 
+        // else {incell = "⭕"}
       }
     });
   }
+
+  // shouldComponentUpdate(nextProps, nextState){
+  //   if (!nextState.isMyTurn && nextState.response){
+  //     return false;
+  //   }
+  //   return true;
+  // }
+
+  // allowClick(){
+  //   if (!this.state.isMyTurn){
+  //     alert("This is not your turn!");
+  //     return;
+  //   }
+  // }
 
   updateInput(event) {
     this.setState({ playerName: event.target.value });
@@ -86,18 +113,12 @@ export default class Board extends React.Component {
     this.setState({ nameOK: true });
   }
 
+
   componentDidMount() {
     const {
       match: { params }
     } = this.props;
     this.setState({ room: params.room });
-    //   const { endpoint } = this.state;
-    //   const socket = socketIOClient(endpoint);
-    //   socket.on("send-data", data => {
-    //     alert('from server' + data);
-    //   });
-
-    //   // socket.emit("client-send-data", this.state.response);
   }
 
   // Gets initial board data
@@ -116,7 +137,8 @@ export default class Board extends React.Component {
           x: i,
           y: j,
           isX: true,
-          isClicked: false
+          isClicked: false,
+          isMyTurn: true
         };
       }
     }
@@ -125,6 +147,7 @@ export default class Board extends React.Component {
 
   renderBoard(data) {
     let arr = [];
+    console.log( "renderboard ismyturn: " +this.state.isMyTurn);
     for (let i = 0; i < data.length; i++) {
       arr.push(
         <Row
@@ -142,13 +165,13 @@ export default class Board extends React.Component {
 
     return <div>{arr}</div>;
   }
-
+  
   render() {
-    const {
-      height,
-      width,
-      match: { params }
-    } = this.props;
+    // const {
+    //   height,
+    //   width,
+    //   match: { params }
+    // } = this.props;
 
     let inputName = (
       <div>
@@ -182,7 +205,7 @@ export default class Board extends React.Component {
     // this.setState({boardData: boardData});
 
     let board = (
-      <div className="board" id="boardplay">
+      <div className="board" id="boardplay" >
         {this.renderBoard(this.state.boardData)}
       </div>
     );

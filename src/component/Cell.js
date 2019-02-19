@@ -9,7 +9,7 @@ class Cell extends React.Component {
       in: "",
       x: this.props.x,
       y: this.props.y,
-      isMyTurn: this.props.isMyTurn,
+      isMyTurn: this.props.value.isMyTurn,
       isX: this.props.isX,
       oppID:this.props.oppID,
       room:this.props.room
@@ -17,28 +17,46 @@ class Cell extends React.Component {
     this.handleClick = this.handleClick.bind(this);
   }
 
+  getValueInCell(){
+    if (this.props.value.isClicked){
+      return this.props.value.isX ? "❌" : "⭕";
+
+    }else{
+      return "";
+    }
+  }
+
+
   handleClick() {
-    if (!this.state.isMyTurn) {
+    console.log("cell state: "+ this.state.isMyTurn);
+    if (!this.props.value.isMyTurn) {
       alert("This is not your turn!");
       return;
     }
-    let { value } = this.props;
-    if (value.isX) {
-      this.setState({ in: "❌" });
-    } else {
-      this.setState({ in: "⭕" });
-    }
-    console.log("X: " + this.state.x + " Y: " + this.state.y);
-    // this.props.socket.emit("test", "hahahha");
+    // if (this.state.isX) {
+    //   this.setState({ in: "❌" });
+    // } else {
+    //   this.setState({ in: "⭕" });
+    // }
+
     let req = this.state;
     req["header"] = "update-check";
     this.props.socket.emit("from-client", req);
+
+    // this.props.socket.on("from-server", data => {
+    //   if (data.header == "update-check-from-server"){
+    //     console.log(data);
+
+
+        
+    //   }
+    // });
   }
 
   render() {
     return (
       <div className="cell" onClick={this.handleClick}>
-        {this.state.in}
+        {this.getValueInCell()}
       </div>
     );
   }
