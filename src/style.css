@@ -45,7 +45,7 @@ input[type=submit]:hover {
   display: flex;
   flex-direction: column;
   width: 100%;
-  min-width: 900px; 
+  min-width: 1000px; 
 }
 
 .game-header{
