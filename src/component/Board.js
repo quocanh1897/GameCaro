@@ -41,7 +41,7 @@ export default class Board extends React.Component {
       modalEmoShow: false,
       win: false,
       lose: false,
-      emoji: ""
+      emoji: "😊"
     };
     this.onClick = this.onClick.bind(this);
     this.allowClick = this.allowClick.bind(this);

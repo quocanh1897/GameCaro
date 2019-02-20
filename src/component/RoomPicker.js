@@ -63,7 +63,7 @@ class RoomPicker extends React.Component {
     }
 
     let rand = Math.floor(Math.random() * this.state.NumberRoom );//0 .. 99
-    let link = "/play/room" + (rand < 10 ? '0'+rand : rand).toString();
+    let link = "/play/room" + rand.toString();
     console.log( "rd link: "+ link);
 
     let rdBtn = ( 
