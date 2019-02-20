@@ -127,6 +127,13 @@ input[type=submit]:hover {
   justify-content: center;
   margin: 15px; 
 }
+.line-left{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  margin: 15px;
+}
 .vs{
   width: 100%;
   display: flex;
