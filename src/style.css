@@ -8,7 +8,8 @@ ul {
   padding-left: 30px;
 }
 
-input[type=number], select {
+input[type=number],
+select {
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;
@@ -35,7 +36,7 @@ input[type=submit]:hover {
   background-color: #45a049;
 }
 
-#root{
+#root {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -45,10 +46,10 @@ input[type=submit]:hover {
   display: flex;
   flex-direction: column;
   width: 100%;
-  min-width: 1000px; 
+  min-width: 1000px;
 }
 
-.game-header{
+.game-header {
   display: block;
   width: 100%;
   max-width: 555px;
@@ -56,11 +57,11 @@ input[type=submit]:hover {
   padding: 20px;
   border-radius: 5px;
   background-color: #f2f2f2;
-  background-image: linear-gradient(to right, green , yellow);
+  background-image: linear-gradient(to right, green, yellow);
   border: 1px solid black;
 }
 
-.game-board{
+.game-board {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -82,18 +83,17 @@ input[type=submit]:hover {
   font-size: 16px;
 }
 
-.board{
-  
+.board {
+
   width: 100%;
   display: flex;
   justify-content: center
-  
 }
 
 .row {
   display: flex;
   flex-wrap: wrap;
-  margin-right: 0px !important ;
+  margin-right: 0px !important;
   margin-left: 0px !important;
 }
 
@@ -110,43 +110,50 @@ input[type=submit]:hover {
   color: #fff;
   font-weight: 600;
 }
+
 .room-btn {
   transition: all 1s;
   margin: 20px;
 }
-.create-btn{
+
+.create-btn {
   margin: 1.25em;
 }
 
-.room-label{
+.room-label {
   display: flex;
-  
+
 }
-.line{
+
+.line {
   width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: center;
-  margin: 15px; 
+  margin: 15px;
 }
-.line-left{
+
+.line-left {
   width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: left;
   margin: 15px;
 }
-.vs{
+
+.vs {
   width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
 }
-.wrapper-room-btn{
+
+.wrapper-room-btn {
   display: flex;
   flex-wrap: wrap;
 }
-.line-sm{
+
+.line-sm {
   width: 20%;
   margin: 15px;
 }

@@ -12,7 +12,6 @@ import { Link } from "react-router-dom";
 
 let socket;
 export default class Board extends React.Component {
-  /* Helper Functions */
   constructor(props) {
     super(props);
     const {
@@ -41,12 +40,11 @@ export default class Board extends React.Component {
       modalEmoShow: false,
       win: false,
       lose: false,
-      emoji: "😊"
+      emoji: false
     };
     this.onClick = this.onClick.bind(this);
     this.allowClick = this.allowClick.bind(this);
     this.handleEmoji = this.handleEmoji.bind(this);
-
     this.updateInput = this.updateInput.bind(this);
     this.handleSubmitName = this.handleSubmitName.bind(this);
   }
@@ -59,18 +57,17 @@ export default class Board extends React.Component {
   }
 
   handleEmoji(e) {
-    // console.log(e.target.innerText);
     let req = {
       emoji: e.target.innerText,
+      oppID: this.state.oppID,
       room: this.state.room,
       id: this.state.id,
-      oppID: this.state.oppID
     };
     socket.emit("emoji", req);
-    socket.on("emoji-from-server", data => {
-      console.log(data.emoji);
-      this.setState({ emoji: data.emoji , modalEmoShow: true});
-    });
+    // socket.on("emoji-from-server", data => {
+    //   console.log(data.emoji);
+    //   this.setState({ emoji: data.emoji, modalEmoShow: true });
+    // });
   }
 
   onClick() {
@@ -86,6 +83,11 @@ export default class Board extends React.Component {
     const { endpoint } = this.state;
     socket = socketIOClient(endpoint);
 
+    socket.on("emoji-from-server", data => {
+      console.log(data.emoji);
+      this.setState({ emoji: data.emoji, modalEmoShow: true });
+    });
+    
     let req = {
       header: "init",
       room: this.state.room,
@@ -147,12 +149,8 @@ export default class Board extends React.Component {
       match: { params }
     } = this.props;
     this.setState({ room: params.room });
-    // if (this.state.win){
-    //   this.setState({ modalShow: true });
-    // }
   }
 
-  // Gets initial board data
   initBoardData(height, width) {
     let data = this.createEmptyArray(height, width);
     return data;
@@ -241,8 +239,6 @@ export default class Board extends React.Component {
         </label>
       </div>
     );
-    // let boardData = this.initBoardData(height, width);
-    // this.setState({boardData: boardData});
 
     let board = (
       <div className="board" id="boardplay">
@@ -318,7 +314,11 @@ export default class Board extends React.Component {
           onHide={modalClose}
           opponent={this.state.opponent}
         />
-        <ModalEmoji show={this.state.modalEmoShow} onHide={modalClose} emoji={this.state.emoji} />
+        <ModalEmoji
+          show={this.state.modalEmoShow}
+          onHide={modalClose}
+          emoji={this.state.emoji}
+        />
         <div className="game-board" onClick={this.allowClick}>
           <Button variant="light" className="room-label">
             <Badge variant="light">

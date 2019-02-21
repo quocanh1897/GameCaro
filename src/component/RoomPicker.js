@@ -21,9 +21,7 @@ class RoomPicker extends React.Component {
 
   }
   
-  componentWillMount(props){
-    //set random room to join
-    
+  componentWillMount(props){   
     //send request to get list of room 1 player
     let req = {
       header: "number-of-room"
@@ -36,8 +34,6 @@ class RoomPicker extends React.Component {
   }
 
   handleCreateRoom(){
-
-    // console.log(this.state.randomLink);
     let req = {
       header: "create-room"
     }
