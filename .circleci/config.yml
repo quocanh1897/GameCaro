@@ -8,8 +8,6 @@ jobs:
       - run:
           name: update-npm
           command: 'cd Server && sudo npm install -g npm@5'
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
       - run:
           name: install-npm-wee
           command: 'cd Server && npm install'
