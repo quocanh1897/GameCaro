@@ -7,16 +7,12 @@ jobs:
       - checkout # check out the code in the project directory
       - run:
           name: update-npm
-          command: 'sudo npm install -g npm@5'
+          command: 'cd Server && sudo npm install -g npm@5'
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run:
           name: install-npm-wee
-          command: npm install
-      - save_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-          paths:
-            - ./node_modules
+          command: 'cd Server && npm install'
       - run:
           name: test
-          command: npm test
+          command: 'cd Server && npm test'
