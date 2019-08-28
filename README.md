@@ -2,9 +2,9 @@
 
 ## Server
 
-- Server sử dụng Nodejs, các thư viện express, socket.io hỗ trợ kết nối với client.
-- Server xử lý các logic của game, lưu trữ tạm các thông tin cơ bản.
-- Run server:
+- Server uses Nodejs, express, socket.io support to connect with the client.
+- The server processes the logic of the game, temporarily storing the basic information.
+- Run Server:
 
 ```sh
 cd Server
@@ -14,8 +14,8 @@ node app.js
 
 ## Client
 
-- Client sử dụng React, thư viện socket.io hỗ trợ kết nối.
-- Run client:
+- Client uses React, socket.io for handling connections.
+- Run Client:
 
 ```sh
 cd Client
